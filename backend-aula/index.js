@@ -2,7 +2,8 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const sqlite3 = require(sqlite3).verbose(); // Banco sqlite
+const sqlite3 = require('sqlite3').verbose(); // Banco sqlite
+const authRouter = require('.routes/auth');
 
 // Criando o servidor
 const app = express();
@@ -11,6 +12,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Conecta ao Banco de dados
 const db = new sqlite3.Database('./tarefas.db', (err) =>
 {
     if (err) {
@@ -20,6 +22,7 @@ const db = new sqlite3.Database('./tarefas.db', (err) =>
     }
 }
 );
+
 
 // Criando tabelas
 db.serialize(() =>
@@ -53,6 +56,7 @@ app.get('/api/teste',(req, res) => {
     res.json({message: 'Backend funcionando e conectado'})
 });
 
+app.use('api/auth', authRouter);
 
 // Definir a porta do servidor
 const PORT = 3001;
